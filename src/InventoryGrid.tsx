@@ -5,13 +5,13 @@ const InventoryGrid: React.FC = () => {
   const [, drop] = useDrop({
     accept: 'ITEM',
     drop: (item, monitor) => {
-      // СБрос предмета
+      // Сброс предмета
     },
   });
 
-  const cellSize = 50;
-  const columns = 10;
-  const rows = 6;
+  const cellSize = 60;
+  const columns = 5;
+  const rows = 4;
 
   const cells = [];
   for (let y = 0; y < rows; y++) {
@@ -32,7 +32,6 @@ const InventoryGrid: React.FC = () => {
       );
     }
   }
-
 
   const dropRef = (node: HTMLDivElement | null) => {
     drop(node);
