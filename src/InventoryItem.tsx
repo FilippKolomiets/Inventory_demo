@@ -33,10 +33,10 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onDelete, onRotate,
 
   const itemStyle: React.CSSProperties = {
     position: 'absolute',
-    left: item.x * 60,
-    top: item.y * 60,
-    width: item.rotated ? item.height * 60 : item.width * 60,
-    height: item.rotated ? item.width * 60 : item.height * 60,
+    left: item.x * 50,  
+    top: item.y * 50,   
+    width: item.rotated ? item.height * 50 : item.width * 50, 
+    height: item.rotated ? item.width * 50 : item.height * 50, 
     opacity: isDragging ? 0.5 : 1,
     border: '1px solid black',
     backgroundColor: 'lightgray',
@@ -46,7 +46,6 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onDelete, onRotate,
   };
 
   return (
-    
     <div ref={itemRef} style={itemStyle}>
       <div style={{ textAlign: 'center' }}>{item.name}</div>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>

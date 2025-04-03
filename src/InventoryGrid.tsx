@@ -1,15 +1,28 @@
-import React from 'react';
-import { useDrop } from 'react-dnd';
+import React, { useRef, useEffect } from 'react';
+import { useDrop, DropTargetMonitor } from 'react-dnd';
 
-const InventoryGrid: React.FC = () => {
-  const [, drop] = useDrop({
+interface InventoryGridProps {
+  moveItem: (id: number, x: number, y: number) => void;
+}
+
+const InventoryGrid: React.FC<InventoryGridProps> = ({ moveItem }) => {
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  const [, drop] = useDrop(() => ({
     accept: 'ITEM',
-    drop: (item, monitor) => {
+    drop: (draggedItem: { id: number }, monitor: DropTargetMonitor) => {
       // Сброс предмета
+      const offset = monitor.getClientOffset();
+      if (!offset || !gridRef.current) return;
+      const gridRect = gridRef.current.getBoundingClientRect();
+      const cellSize = 50; 
+      const x = Math.floor((offset.x - gridRect.left) / cellSize);
+      const y = Math.floor((offset.y - gridRect.top) / cellSize);
+      moveItem(draggedItem.id, x, y);
     },
-  });
+  }));
 
-  const cellSize = 60;
+  const cellSize = 50; 
   const columns = 5;
   const rows = 4;
 
@@ -33,14 +46,16 @@ const InventoryGrid: React.FC = () => {
     }
   }
 
-  const dropRef = (node: HTMLDivElement | null) => {
-    drop(node);
-  };
+  useEffect(() => {
+    if (gridRef.current) {
+      drop(gridRef.current);
+    }
+  }, [drop]);
 
   return (
     <div
       id="inventory-grid"
-      ref={dropRef}
+      ref={gridRef}
       style={{
         position: 'relative',
         width: columns * cellSize,
