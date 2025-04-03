@@ -29,15 +29,46 @@ const App: React.FC = () => {
   };
 
   const moveItem = (id: number, x: number, y: number) => {
-    setItems(prev =>
-      prev.map(item => (item.id === id ? { ...item, x, y } : item))
-    );
+    setItems(prev => {
+      const movingItem = prev.find(item => item.id === id);
+      if (!movingItem) return prev;
+      
+      const w = movingItem.rotated ? movingItem.height : movingItem.width;
+      const h = movingItem.rotated ? movingItem.width : movingItem.height;
+      
+      const gridCols = 5;
+      const gridRows = 4;
+      
+      if (x < 0 || y < 0 || x + w > gridCols || y + h > gridRows) {
+        return prev;
+      }
+      
+      for (const other of prev) {
+        if (other.id === id) continue;
+        const ow = other.rotated ? other.height : other.width;
+        const oh = other.rotated ? other.width : other.height;
+        if (boxesOverlap(x, y, w, h, other.x, other.y, ow, oh)) {
+          return prev;
+        }
+      }
+      
+      return prev.map(item => (item.id === id ? { ...item, x, y } : item));
+    });
   };
+
+  function boxesOverlap(
+    x1: number, y1: number, w1: number, h1: number,
+    x2: number, y2: number, w2: number, h2: number
+  ): boolean {
+    if (x1 + w1 <= x2 || x2 + w2 <= x1) return false;
+    if (y1 + h1 <= y2 || y2 + h2 <= y1) return false;
+    return true;
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div style={{ padding: 20 }}>
-        <h1>Инввентарь</h1>
+        <h1>Инвентарь</h1>
         <div style={{ display: 'flex', gap: '20px' }}>
           {/* ячейки для экипировки */}
           <EquipmentPanel />
