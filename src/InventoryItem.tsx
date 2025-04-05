@@ -28,15 +28,14 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onDelete, onRotate,
   }));
 
   const itemRef = useRef<HTMLDivElement>(null);
-
   drag(itemRef);
 
   const itemStyle: React.CSSProperties = {
     position: 'absolute',
-    left: item.x * 50,  
-    top: item.y * 50,   
-    width: item.rotated ? item.height * 50 : item.width * 50, 
-    height: item.rotated ? item.width * 50 : item.height * 50, 
+    left: item.x * 100,  
+    top: item.y * 100,   
+    width: item.rotated ? item.height * 100 : item.width * 100, 
+    height: item.rotated ? item.width * 100 : item.height * 100, 
     opacity: isDragging ? 0.5 : 1,
     border: '1px solid black',
     backgroundColor: 'lightgray',

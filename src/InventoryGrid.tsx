@@ -15,14 +15,14 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ moveItem }) => {
       const offset = monitor.getClientOffset();
       if (!offset || !gridRef.current) return;
       const gridRect = gridRef.current.getBoundingClientRect();
-      const cellSize = 50;
+      const cellSize = 100;
       const x = Math.floor((offset.x - gridRect.left) / cellSize);
       const y = Math.floor((offset.y - gridRect.top) / cellSize);
       moveItem(draggedItem.id, x, y);
     },
   }));
 
-  const cellSize = 50;
+  const cellSize = 100; 
   const columns = 5;
   const rows = 4;
 
@@ -42,7 +42,7 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ moveItem }) => {
             backgroundImage: `url('/assets/cell.svg')`,
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
-            imageRendering: 'pixelated',
+            imageRendering: 'pixelated'
           }}
         />
       );

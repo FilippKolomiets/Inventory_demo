@@ -27,17 +27,19 @@ const DeleteZone: React.FC<DeleteZoneProps> = ({ onDelete }) => {
     <div
       ref={dropRef}
       style={{
-        height: '50px',
-        width: '100%',
-        backgroundColor: isOver ? '#ff4d4d' : '#cc0000',
-        color: 'white',
+        height: '100px',
+        width: '500px',
+        backgroundImage: `url('/assets/buttons.svg')`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        imageRendering: 'pixelated',
+        filter: isOver ? 'brightness(1.2)' : 'none',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontWeight: 'bold',
       }}
     >
-      Перетащите сюда для удаления
+
     </div>
   );
 };
