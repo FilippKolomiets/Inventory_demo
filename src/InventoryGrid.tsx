@@ -1,24 +1,38 @@
 import React, { useRef, useEffect } from 'react';
 import { useDrop, DropTargetMonitor } from 'react-dnd';
+import { ItemType } from './InventoryItem';
 
 interface InventoryGridProps {
   moveItem: (id: number, x: number, y: number) => void;
+  addItem: (item: ItemType) => void;
 }
 
-const InventoryGrid: React.FC<InventoryGridProps> = ({ moveItem }) => {
+const InventoryGrid: React.FC<InventoryGridProps> = ({ moveItem, addItem }) => {
   const gridRef = useRef<HTMLDivElement>(null);
 
   const [, drop] = useDrop(() => ({
-    accept: 'ITEM',
-    drop: (draggedItem: { id: number }, monitor: DropTargetMonitor) => {
-      // Сброс предмета
+    accept: ['ITEM', 'NEW_ITEM'],
+    drop: (draggedItem: any, monitor: DropTargetMonitor) => {
       const offset = monitor.getClientOffset();
       if (!offset || !gridRef.current) return;
       const gridRect = gridRef.current.getBoundingClientRect();
-      const cellSize = 100;
+      const cellSize = 100; 
       const x = Math.floor((offset.x - gridRect.left) / cellSize);
       const y = Math.floor((offset.y - gridRect.top) / cellSize);
-      moveItem(draggedItem.id, x, y);
+      if (draggedItem.newItem) {
+        const newItem: ItemType = {
+          id: Date.now(),
+          name: draggedItem.name,
+          x,
+          y,
+          width: draggedItem.width,
+          height: draggedItem.height,
+          rotated: draggedItem.rotated,
+        };
+        addItem(newItem);
+      } else {
+        moveItem(draggedItem.id, x, y);
+      }
     },
   }));
 
@@ -41,7 +55,7 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ moveItem }) => {
             boxSizing: 'border-box',
             backgroundImage: `url('/assets/cell.svg')`,
             backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
+            backgroundSize: '100% 100%', 
             imageRendering: 'pixelated'
           }}
         />

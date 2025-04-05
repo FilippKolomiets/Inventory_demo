@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import EquipmentPanel from './EquipmentPanel';
 import CharacterArea from './CharacterArea';
 import ActiveItemsPanel from './ActiveItemsPanel';
+import AdminPanel from './AdminPanel';
 import InventoryGrid from './InventoryGrid';
 import DeleteZone from './DeleteZone';
 import InventoryItem, { ItemType } from './InventoryItem';
@@ -13,7 +14,6 @@ const App: React.FC = () => {
     { id: 1, name: 'Рюкзак', x: 0, y: 0, width: 2, height: 4, rotated: false },
     { id: 2, name: 'Пистолет', x: 3, y: 0, width: 1, height: 2, rotated: false },
   ]);
-
 
   const boxesOverlap = (
     x1: number, y1: number, w1: number, h1: number,
@@ -79,19 +79,28 @@ const App: React.FC = () => {
     });
   };
 
+  const addItem = (newItem: ItemType) => {
+    setItems(prev => [...prev, newItem]);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div style={{ padding: 20 }}>
         <h1>Инввентарь</h1>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-          {/* ячейки для экипировки */}
-          <EquipmentPanel />
-          {/* область персонажа и активных вещей */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <CharacterArea />
-            <ActiveItemsPanel />
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}>
+          {/* Левая колонка: админка */}
+          <div style={{ width: '300px' }}>
+            <AdminPanel />
           </div>
-          {/*  инвентарь */}
+          {/* Средняя колонка: экипировка и персонаж */}
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <EquipmentPanel />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <CharacterArea />
+              <ActiveItemsPanel />
+            </div>
+          </div>
+          {/* Правая колонка: инвентарь */}
           <div
             style={{
               display: 'flex',
@@ -100,7 +109,7 @@ const App: React.FC = () => {
             }}
           >
             <div style={{ position: 'relative' }}>
-              <InventoryGrid moveItem={moveItem} />
+              <InventoryGrid moveItem={moveItem} addItem={addItem} />
               {items.map(item => (
                 <InventoryItem
                   key={item.id}
