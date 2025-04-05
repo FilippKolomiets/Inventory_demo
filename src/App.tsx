@@ -85,14 +85,12 @@ const App: React.FC = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: 40 }}>
         <h1>Инввентарь</h1>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '5px' }}>
-          {/* Левая колонка: админка */}
           <div style={{ width: '300px' }}>
             <AdminPanel />
           </div>
-          {/* Средняя колонка: экипировка и персонаж */}
           <div style={{ display: 'flex', gap: '5px' }}>
             <EquipmentPanel />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -100,7 +98,6 @@ const App: React.FC = () => {
               <ActiveItemsPanel />
             </div>
           </div>
-          {/* Правая колонка: инвентарь */}
           <div
             style={{
               display: 'flex',
