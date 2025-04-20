@@ -3,17 +3,24 @@ import { useDrag } from 'react-dnd';
 import { ItemType } from './InventoryItem';
 
 interface AdminItemProps {
-  item: Omit<ItemType, 'x' | 'y' | 'id'>;
+  item: Omit<ItemType, 'x' | 'y'>;
 }
 
 const AdminItem: React.FC<AdminItemProps> = ({ item }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'NEW_ITEM',
-    item: { ...item, newItem: true },
-    collect: (monitor) => ({
+    item: {
+      id: item.id,
+      name: item.name,
+      width: item.width,
+      height: item.height,
+      rotated: item.rotated,
+      newItem: true
+    },
+    collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
-  }));
+  }), [item]);
 
   return (
     <div

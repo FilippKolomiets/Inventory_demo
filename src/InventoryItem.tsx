@@ -1,148 +1,137 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { useDrag } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 export interface ItemType {
-  id: number;
+  id: number;         
+  spriteId: number;   
   name: string;
   x: number;
   y: number;
-  width: number;
-  height: number;
-  rotated: boolean;
-  useSound?: string;
+  width: number;      
+  height: number;     
+  rotated: boolean;   
 }
 
 interface InventoryItemProps {
   item: ItemType;
-  onDelete: (id: number) => void;
   onRotate: (id: number) => void;
-  onUse: (id: number) => void;
 }
 
-const InventoryItem: React.FC<InventoryItemProps> = ({ item, onDelete, onRotate, onUse }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'ITEM',
-    item: { id: item.id },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+
+const spriteHorizontal: Record<number, string> = {
+  109: '/assets/sprite/backpack_horiz.png',
+  110: '/assets/sprite/meat_horiz.png',
+  111: '/assets/sprite/tin_of_food_horiz.png',
+  112: '/assets/sprite/pack_of_chips_horiz.png',
+  113: '/assets/sprite/water_bottle_horiz.png',
+  114: '/assets/sprite/cola_horiz.png',
+  115: '/assets/sprite/syringe_horiz.png',
+  116: '/assets/sprite/pharmacy_horiz.png',
+  117: '/assets/sprite/medicines_horiz.png',
+  118: '/assets/sprite/axe_horiz.png',
+  119: '/assets/sprite/pistol_horiz.png',
+  120: '/assets/sprite/kalash_horiz.png',
+  121: '/assets/sprite/knife_horiz.png',
+  122: '/assets/sprite/machete_horiz.png',
+};
+
+const spriteVertical: Record<number, string> = {
+  109: '/assets/sprite/backpack_vert.png',
+  110: '/assets/sprite/meat_vert.png',
+  111: '/assets/sprite/tin_of_food_vert.png',
+  112: '/assets/sprite/pack_of_chips_vert.png',
+  113: '/assets/sprite/water_bottle_vert.png',
+  114: '/assets/sprite/cola_vert.png',
+  115: '/assets/sprite/syringe_vert.png',
+  116: '/assets/sprite/pharmacy_vert.png',
+  117: '/assets/sprite/medicines_vert.png',
+  118: '/assets/sprite/axe_vert.png',
+  119: '/assets/sprite/pistol_vert.png',
+  120: '/assets/sprite/kalash_vert.png',
+  121: '/assets/sprite/knife_vert.png',
+  122: '/assets/sprite/machete_vert.png',
+};
+
+const InventoryItem: React.FC<InventoryItemProps> = ({ item, onRotate }) => {
+  const [{ isDragging }, drag, preview] = useDrag(
+    () => ({
+      type: 'ITEM',
+      item: {
+        id:      item.id,
+        spriteId:item.spriteId,
+        width:   item.width,
+        height:  item.height,
+        rotated: item.rotated,
+        newItem: false,
+      },
+      collect: m => ({ isDragging: m.isDragging() }),
     }),
-  }));
+    [item]
+  );
 
-  const itemRef = useRef<HTMLDivElement>(null);
-  drag(itemRef);
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
 
-  const [showOverlay, setShowOverlay] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  drag(ref);
 
-  const handleDoubleClick = useCallback(() => {
-    setShowOverlay(true);
-  }, []);
+
+  const [focused, setFocused] = useState(false);
+
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.code === 'Space') {
         e.preventDefault();
         onRotate(item.id);
-        setShowOverlay(false);
       }
     },
     [item.id, onRotate]
   );
 
-  const playSound = useCallback((url: string) => {
-    const audio = new Audio(url);
-    audio.play().catch(err => console.error(err));
-  }, []);
+  const CELL = 100;
+  const wCells = item.rotated ? item.height : item.width;
+  const hCells = item.rotated ? item.width  : item.height;
+  const w = wCells * CELL;
+  const h = hCells * CELL;
 
-  const getUseSound = useCallback((): string => {
-    switch (item.name) {
-      case 'Пистолет':
-        return '/assets/sounds/zaryajennyiy-dlya-strelbyi-pistolet.mp3';
-      case 'Аптечка':
-        return '/assets/sounds/shelest-parashyutnoy-tkani-pri-raskryitii.mp3';
-      case 'Вода':
-        return '/assets/sounds/gulp.mp3';
-      case 'Рюкзак':
-        return '/assets/sounds/vstryahivanie-odejdyi-36071.mp3';
-      case 'Еда':
-        return '/assets/sounds/chewing.mp3';
-      default:
-        return '/assets/sounds/default.mp3';
-    }
-  }, [item.name]);
-
-  const itemStyle: React.CSSProperties = {
-    position: 'absolute',
-    left: item.x * 100,
-    top: item.y * 100,
-    width: item.rotated ? item.height * 100 : item.width * 100,
-    height: item.rotated ? item.width * 100 : item.height * 100,
-    opacity: isDragging ? 0.5 : 1,
-    border: '1px solid black',
-    backgroundColor: 'lightgray',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    transition: 'all 0.2s ease',
-    cursor: 'move',
-  };
-
-  const overlayStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: '100%',
-    marginLeft: '10px',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: '5px',
-    border: '1px solid black',
-    zIndex: 10,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-  };
+  const src = item.rotated
+    ? spriteHorizontal[item.spriteId]
+    : spriteVertical[item.spriteId];
 
   return (
     <div
-      ref={itemRef}
-      style={itemStyle}
+      ref={ref}
+      style={{
+        position: 'absolute',
+        left:     item.x * CELL,
+        top:      item.y * CELL,
+        width:    w,
+        height:   h,
+        cursor:   'move',
+        opacity:  isDragging ? 0.5 : 1,
+        outline:  focused ? '2px solid white' : 'none',
+        borderRadius: 4,
+      }}
       tabIndex={0}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       onKeyDown={handleKeyDown}
-      onDoubleClick={handleDoubleClick}
-      onMouseDown={() => itemRef.current?.focus()}
     >
-      <div style={{ textAlign: 'center' }}>{item.name}</div>
-      {showOverlay && (
-        <div style={overlayStyle}>
-          <button
-            onClick={() => {
-              playSound(getUseSound());
-              onUse(item.id);
-              setShowOverlay(false);
-            }}
-            style={{ color: 'black' }}
-          >
-            Use
-          </button>
-          <button
-            onClick={() => {
-              onRotate(item.id);
-              setShowOverlay(false);
-            }}
-            style={{ color: 'black' }}
-          >
-            Rotate
-          </button>
-          <button
-            onClick={() => {
-              onDelete(item.id);
-              setShowOverlay(false);
-            }}
-            style={{ color: 'black' }}
-          >
-            Delete
-          </button>
-        </div>
-      )}
+      <img
+        src={src}
+        alt={item.name}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          imageRendering: 'pixelated',
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
     </div>
   );
 };
