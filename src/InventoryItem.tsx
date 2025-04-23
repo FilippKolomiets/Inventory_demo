@@ -1,16 +1,18 @@
+// src/InventoryItem.tsx
+
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
 export interface ItemType {
-  id: number;         
-  spriteId: number;   
+  id: number;
+  spriteId: number;
   name: string;
   x: number;
   y: number;
-  width: number;      
-  height: number;     
-  rotated: boolean;   
+  width: number;
+  height: number;
+  rotated: boolean;
 }
 
 interface InventoryItemProps {
@@ -18,8 +20,15 @@ interface InventoryItemProps {
   onRotate: (id: number) => void;
 }
 
-
 const spriteHorizontal: Record<number, string> = {
+  101: '/assets/sprite/top_farmer_horiz.png',
+  102: '/assets/sprite/top_tactical_horiz.png',
+  103: '/assets/sprite/top_warm_horiz.png',
+  104: '/assets/sprite/pants_farmer_horiz.png',
+  105: '/assets/sprite/pants_tactical_horiz.png',
+  106: '/assets/sprite/pants_warm_horiz.png',
+  107: '/assets/sprite/gear_unpack_horiz.png',
+  108: '/assets/sprite/armor_vest_horiz.png',
   109: '/assets/sprite/backpack_horiz.png',
   110: '/assets/sprite/meat_horiz.png',
   111: '/assets/sprite/tin_of_food_horiz.png',
@@ -37,6 +46,14 @@ const spriteHorizontal: Record<number, string> = {
 };
 
 const spriteVertical: Record<number, string> = {
+  101: '/assets/sprite/top_farmer_vert.png',
+  102: '/assets/sprite/top_tactical_vert.png',
+  103: '/assets/sprite/top_warm_vert.png',
+  104: '/assets/sprite/pants_farmer_vert.png',
+  105: '/assets/sprite/pants_tactical_vert.png',
+  106: '/assets/sprite/pants_warm_vert.png',
+  107: '/assets/sprite/gear_unpack_vert.png',
+  108: '/assets/sprite/armor_vest_vert.png',
   109: '/assets/sprite/backpack_vert.png',
   110: '/assets/sprite/meat_vert.png',
   111: '/assets/sprite/tin_of_food_vert.png',
@@ -58,10 +75,10 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onRotate }) => {
     () => ({
       type: 'ITEM',
       item: {
-        id:      item.id,
-        spriteId:item.spriteId,
-        width:   item.width,
-        height:  item.height,
+        id: item.id,
+        spriteId: item.spriteId,
+        width: item.width,
+        height: item.height,
         rotated: item.rotated,
         newItem: false,
       },
@@ -77,9 +94,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onRotate }) => {
   const ref = useRef<HTMLDivElement>(null);
   drag(ref);
 
-
   const [focused, setFocused] = useState(false);
-
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -101,18 +116,27 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onRotate }) => {
     ? spriteHorizontal[item.spriteId]
     : spriteVertical[item.spriteId];
 
+  let scale = 1;
+  if (item.spriteId >= 101 && item.spriteId <= 106) {
+    scale = 1.3;
+  } else if (item.spriteId === 107) {
+    scale = 2.0;
+  } else if (item.spriteId === 108) {
+    scale = 2.0;
+  }
+
   return (
     <div
       ref={ref}
       style={{
         position: 'absolute',
-        left:     item.x * CELL,
-        top:      item.y * CELL,
-        width:    w,
-        height:   h,
-        cursor:   'move',
-        opacity:  isDragging ? 0.5 : 1,
-        outline:  focused ? '2px solid white' : 'none',
+        left: item.x * CELL,
+        top: item.y * CELL,
+        width: w,
+        height: h,
+        cursor: 'move',
+        opacity: isDragging ? 0.5 : 1,
+        outline: focused ? '2px solid white' : 'none',
         borderRadius: 4,
       }}
       tabIndex={0}
@@ -130,6 +154,8 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onRotate }) => {
           imageRendering: 'pixelated',
           pointerEvents: 'none',
           userSelect: 'none',
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
         }}
       />
     </div>

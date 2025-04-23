@@ -5,12 +5,12 @@ import { ItemType } from './InventoryItem';
 type AdminItemType = Omit<ItemType, 'x' | 'y'>;
 
 const availableItems: AdminItemType[] = [
-  { id: 101, spriteId: 101, name: 'Верх: фермерский',    width: 3, height: 2, rotated: false },
-  { id: 102, spriteId: 102, name: 'Верх: тактический',   width: 3, height: 2, rotated: false },
-  { id: 103, spriteId: 103, name: 'Верх: тёплый',        width: 3, height: 2, rotated: false },
-  { id: 104, spriteId: 104, name: 'Штаны: фермерские',   width: 3, height: 3, rotated: false },
-  { id: 105, spriteId: 105, name: 'Штаны: тактические',  width: 3, height: 3, rotated: false },
-  { id: 106, spriteId: 106, name: 'Штаны: тёплые',       width: 3, height: 3, rotated: false },
+  { id: 101, spriteId: 101, name: 'Верх: фермерский',    width: 2, height: 2, rotated: false },
+  { id: 102, spriteId: 102, name: 'Верх: тактический',   width: 2, height: 2, rotated: false },
+  { id: 103, spriteId: 103, name: 'Верх: тёплый',        width: 2, height: 2, rotated: false },
+  { id: 104, spriteId: 104, name: 'Штаны: фермерские',   width: 2, height: 2, rotated: false },
+  { id: 105, spriteId: 105, name: 'Штаны: тактические',  width: 2, height: 2, rotated: false },
+  { id: 106, spriteId: 106, name: 'Штаны: тёплые',       width: 2, height: 2, rotated: false },
   { id: 107, spriteId: 107, name: 'Аксессуар: разгрузка', width: 1, height: 1, rotated: false },
   { id: 108, spriteId: 108, name: 'Аксессуар: бронежилет', width: 1, height: 1, rotated: false },
   { id: 109, spriteId: 109, name: 'Аксессуар: рюкзак',    width: 4, height: 2, rotated: false },
@@ -20,13 +20,13 @@ const availableItems: AdminItemType[] = [
   { id: 113, spriteId: 113, name: 'Вода: бутылка воды',  width: 1, height: 1, rotated: false },
   { id: 114, spriteId: 114, name: 'Вода: кола',          width: 1, height: 1, rotated: false },
   { id: 115, spriteId: 115, name: 'Медицина: укол адреналина', width: 1, height: 1, rotated: false },
-  { id: 116, spriteId: 116, name: 'Медицина: таблетки парацетамола', width: 1, height: 1, rotated: false },
-  { id: 117, spriteId: 117, name: 'Медицина: большая аптечка',      width: 2, height: 2, rotated: false },
-  { id: 118, spriteId: 118, name: 'Оружие: топор',       width: 1, height: 2, rotated: false },
+  { id: 116, spriteId: 116, name: 'Медицина: большая аптечка', width: 2, height: 2, rotated: false },
+  { id: 117, spriteId: 117, name: 'Медицина: таблетки парацетамола', width: 1, height: 1, rotated: false },
+  { id: 118, spriteId: 118, name: 'Оружие: топорик',       width: 1, height: 2, rotated: false },
   { id: 119, spriteId: 119, name: 'Оружие: пистолет',    width: 2, height: 1, rotated: false },
   { id: 120, spriteId: 120, name: 'Оружие: автомат калашникова', width: 1, height: 5, rotated: false },
   { id: 121, spriteId: 121, name: 'Оружие: нож',         width: 1, height: 1, rotated: false },
-  { id: 122, spriteId: 122, name: 'Оружие: мачете',      width: 2, height: 1, rotated: false },
+  { id: 122, spriteId: 122, name: 'Оружие: мачете',      width: 1, height: 2, rotated: false },
 ];
 
 const AdminPanel: React.FC = () => (

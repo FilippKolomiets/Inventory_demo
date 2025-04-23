@@ -1,24 +1,22 @@
 import React from 'react';
 
 const ActiveItemsPanel: React.FC = () => {
-  const activeSlots = Array(3).fill(null);
-  const slotWidth = 60;
-  const slotHeight = 60;
+  const count = 3;
   return (
-    <div style={{ display: 'flex', gap: '10px' }}>
-      {activeSlots.map((_, index) => (
+    <div style={{ display: 'flex', gap: 10 }}>
+      {Array.from({ length: count }, (_, i) => (
         <div
-          key={index}
+          key={i}
           style={{
-            width: slotWidth,
-            height: slotHeight,
-            border: '2px solid blue',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            width: 60, height: 60,
+            backgroundColor: '#e3c08f',
+            border: '2px solid #000',
+            borderRadius: 2,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'Jersey', fontSize: 12,
           }}
         >
-          {`Актив ${index + 1}`}
+          Актив {i + 1}
         </div>
       ))}
     </div>
