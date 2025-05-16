@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/FilippKolomiets/Inventory_demo/static/css/main.e1ab7b5e.css",
+    "main.js": "/FilippKolomiets/Inventory_demo/static/js/main.1f67a9a7.js",
+    "static/media/Jersey10-Regular.ttf": "/FilippKolomiets/Inventory_demo/static/media/Jersey10-Regular.1096d03f408f835365d9.ttf",
+    "index.html": "/FilippKolomiets/Inventory_demo/index.html",
+    "main.e1ab7b5e.css.map": "/FilippKolomiets/Inventory_demo/static/css/main.e1ab7b5e.css.map",
+    "main.1f67a9a7.js.map": "/FilippKolomiets/Inventory_demo/static/js/main.1f67a9a7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e1ab7b5e.css",
+    "static/js/main.1f67a9a7.js"
+  ]
+}
