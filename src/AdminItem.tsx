@@ -10,13 +10,14 @@ const AdminItem: React.FC<AdminItemProps> = ({ item }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'NEW_ITEM',
     item: {
-      id: item.id,
-      name: item.name,
-      width: item.width,
-      height: item.height,
-      rotated: item.rotated,
-      newItem: true
-    },
+     id: item.id,
+     spriteId: item.id,
+     name: item.name,
+     width: item.width,
+     height: item.height,
+     rotated: item.rotated,
+     newItem: true
+   },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),

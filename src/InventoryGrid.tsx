@@ -3,9 +3,10 @@ import { useDrop, DropTargetMonitor } from 'react-dnd';
 import { ItemType } from './InventoryItem';
 
 interface InventoryGridProps {
-  items: ItemType[];            
+  items: ItemType[];
   moveItem: (id: number, x: number, y: number) => void;
   addItem: (item: ItemType) => void;
+  unequipItem?: (id: number) => void;
 }
 
 interface HoverRect {
@@ -16,13 +17,17 @@ interface HoverRect {
   invalid: boolean;
 }
 
-const InventoryGrid: React.FC<InventoryGridProps> = ({ items, moveItem, addItem }) => {
+const InventoryGrid: React.FC<InventoryGridProps> = ({
+  items,
+  moveItem,
+  addItem,
+  unequipItem,
+}) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [hoverRect, setHoverRect] = useState<HoverRect | null>(null);
-
   const columns = 5;
-  const rows    = 4;
-  const CELL    = 100;
+  const rows = 4;
+  const CELL = 100;
 
   function boxesOverlap(
     x1: number, y1: number, w1: number, h1: number,
@@ -39,12 +44,13 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ items, moveItem, addItem 
       collect: m => ({ isOver: m.isOver({ shallow: true }) }),
       hover: (dragged: any, monitor: DropTargetMonitor) => {
         if (!gridRef.current) return;
-        const off = monitor.getClientOffset(); if (!off) return;
+        const off = monitor.getClientOffset();
+        if (!off) return;
         const { left, top } = gridRef.current.getBoundingClientRect();
         const x = Math.floor((off.x - left) / CELL);
         const y = Math.floor((off.y - top) / CELL);
         const w = dragged.rotated ? dragged.height : dragged.width;
-        const h = dragged.rotated ? dragged.width  : dragged.height;
+        const h = dragged.rotated ? dragged.width : dragged.height;
 
         let invalid =
           x < 0 || y < 0 ||
@@ -53,9 +59,10 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ items, moveItem, addItem 
 
         if (!invalid) {
           for (const it of items) {
-            if (!dragged.newItem && it.id === dragged.id) continue;
+            if (!dragged.newItem && !dragged.fromEquip && it.id === dragged.id) continue;
+            if (dragged.fromEquip && it.id === dragged.id) continue;
             const iw = it.rotated ? it.height : it.width;
-            const ih = it.rotated ? it.width  : it.height;
+            const ih = it.rotated ? it.width : it.height;
             if (boxesOverlap(x, y, w, h, it.x, it.y, iw, ih)) {
               invalid = true;
               break;
@@ -67,52 +74,63 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ items, moveItem, addItem 
       },
       drop: (dragged: any, monitor: DropTargetMonitor) => {
         if (!gridRef.current) return;
-        const off = monitor.getClientOffset(); if (!off) return;
+        const off = monitor.getClientOffset();
+        if (!off) return;
         const { left, top } = gridRef.current.getBoundingClientRect();
         const x = Math.floor((off.x - left) / CELL);
         const y = Math.floor((off.y - top) / CELL);
         const w = dragged.rotated ? dragged.height : dragged.width;
-        const h = dragged.rotated ? dragged.width  : dragged.height;
+        const h = dragged.rotated ? dragged.width : dragged.height;
 
-        if (x < 0 || y < 0 || x + w > columns || y + h > rows || (hoverRect && hoverRect.invalid)) {
+        if (
+          x < 0 || y < 0 ||
+          x + w > columns ||
+          y + h > rows ||
+          (hoverRect && hoverRect.invalid)
+        ) {
           setHoverRect(null);
           return;
         }
 
-        if (dragged.newItem) {
-          addItem({
-            id:       Date.now(),       
-            spriteId: dragged.id,       
-            name:     dragged.name,
+        if (dragged.newItem || dragged.fromEquip) {
+          const newItem: ItemType = {
+            id: dragged.newItem ? Date.now() : dragged.id,
+            spriteId: dragged.spriteId,
+            name: dragged.name,
             x, y,
-            width:    dragged.width,
-            height:   dragged.height,
-            rotated:  dragged.rotated,
-          });
+            width: dragged.width,
+            height: dragged.height,
+            rotated: dragged.rotated,
+          };
+          addItem(newItem);
+          if (dragged.fromEquip && unequipItem) {
+            unequipItem(dragged.id);
+          }
         } else {
           moveItem(dragged.id, x, y);
         }
         setHoverRect(null);
       },
     }),
-    [items, addItem, moveItem, hoverRect]
+    [items, moveItem, addItem, hoverRect, unequipItem]
   );
-
 
   useEffect(() => {
     if (!isOver) setHoverRect(null);
   }, [isOver]);
 
-
   const cells: React.ReactElement[] = [];
   for (let yy = 0; yy < rows; yy++) {
     for (let xx = 0; xx < columns; xx++) {
       cells.push(
-        <div key={`${xx}-${yy}`}
+        <div
+          key={`${xx}-${yy}`}
           style={{
             position: 'absolute',
-            left: xx * CELL, top: yy * CELL,
-            width: CELL, height: CELL,
+            left: xx * CELL,
+            top: yy * CELL,
+            width: CELL,
+            height: CELL,
             boxSizing: 'border-box',
             backgroundImage: `url('/assets/cell.svg')`,
             backgroundRepeat: 'no-repeat',
@@ -131,18 +149,17 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ items, moveItem, addItem 
       style={{
         position: 'relative',
         width: columns * CELL,
-        height: rows    * CELL,
+        height: rows * CELL,
         border: '2px solid black',
       }}
     >
       {cells}
-
       {hoverRect && (
         <div
           style={{
             position: 'absolute',
             left: hoverRect.x * CELL,
-            top:  hoverRect.y * CELL,
+            top: hoverRect.y * CELL,
             width: hoverRect.w * CELL,
             height: hoverRect.h * CELL,
             border: `3px solid ${hoverRect.invalid ? 'red' : 'white'}`,

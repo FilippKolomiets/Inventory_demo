@@ -24,7 +24,7 @@ const availableItems: AdminItemType[] = [
   { id: 117, spriteId: 117, name: 'Медицина: таблетки парацетамола', width: 1, height: 1, rotated: false },
   { id: 118, spriteId: 118, name: 'Оружие: топорик',       width: 1, height: 2, rotated: false },
   { id: 119, spriteId: 119, name: 'Оружие: пистолет',    width: 2, height: 1, rotated: false },
-  { id: 120, spriteId: 120, name: 'Оружие: автомат калашникова', width: 1, height: 5, rotated: false },
+  { id: 120, spriteId: 120, name: 'Оружие: автомат калашникова', width: 2, height: 4, rotated: false },
   { id: 121, spriteId: 121, name: 'Оружие: нож',         width: 1, height: 1, rotated: false },
   { id: 122, spriteId: 122, name: 'Оружие: мачете',      width: 1, height: 2, rotated: false },
 ];

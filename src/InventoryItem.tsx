@@ -1,4 +1,3 @@
-// src/InventoryItem.tsx
 
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { useDrag } from 'react-dnd';
@@ -118,7 +117,7 @@ const InventoryItem: React.FC<InventoryItemProps> = ({ item, onRotate }) => {
 
   let scale = 1;
   if (item.spriteId >= 101 && item.spriteId <= 106) {
-    scale = 1.3;
+    scale = 1.8;
   } else if (item.spriteId === 107) {
     scale = 2.0;
   } else if (item.spriteId === 108) {
